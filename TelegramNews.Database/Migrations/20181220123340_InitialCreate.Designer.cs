@@ -9,8 +9,8 @@ using TelegramNews.Database.Data;
 namespace TelegramNews.Database.Migrations
 {
     [DbContext(typeof(ChannelDbContext))]
-    [Migration("20181219085429_111")]
-    partial class _111
+    [Migration("20181220123340_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,22 +20,9 @@ namespace TelegramNews.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TelegramNews.Database.Entities.Channel", b =>
-                {
-                    b.Property<int>("ChannelId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("PostCount");
-
-                    b.HasKey("ChannelId");
-
-                    b.ToTable("Channels");
-                });
-
             modelBuilder.Entity("TelegramNews.Database.Entities.Post", b =>
                 {
-                    b.Property<int>("PostId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -43,19 +30,13 @@ namespace TelegramNews.Database.Migrations
 
                     b.Property<string>("Content");
 
-                    b.HasKey("PostId");
+                    b.Property<int>("Type");
 
-                    b.HasIndex("ChannelId");
+                    b.Property<int>("Views");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("TelegramNews.Database.Entities.Post", b =>
-                {
-                    b.HasOne("TelegramNews.Database.Entities.Channel")
-                        .WithMany("Posts")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
