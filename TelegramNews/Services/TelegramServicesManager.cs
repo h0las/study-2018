@@ -60,7 +60,7 @@
                 {
                     var tlAbsMessage = tlChannelMessages.Messages.ToList()[index];
                     var message = (TLMessage)tlAbsMessage;
-                    
+
                     if (message.Media == null)
                     {
                         resultMessages.Add(new Post()
@@ -72,6 +72,46 @@
                             Views = message.Views,
                             ChannelName = channelName
                         });
+                    }
+                    else
+                    {
+                        switch (message.Media.GetType().ToString())
+                        {
+                            case "TeleSharp.TL.TLMessageMediaPhoto":
+                                var tLMessageMediaPhoto = (TLMessageMediaPhoto)message.Media;
+
+                                resultMessages.Add(new Post()
+                                {
+                                    TgMessageId = message.Id,
+                                    ChannelId = chat.Id,
+                                    Content = tLMessageMediaPhoto.Caption,
+                                    Type = EnChannelMessage.MediaPhoto,
+                                    Views = message.Views ?? 0,
+                                    ChannelName = channelName
+                                });
+                                break;
+                            case "TeleSharp.TL.TLMessageMediaWebPage":
+                                var tLMessageMediaWebPage = (TLMessageMediaWebPage)message.Media;
+                                string url = string.Empty;
+                                if (tLMessageMediaWebPage.Webpage.GetType().ToString() != "TeleSharp.TL.TLWebPageEmpty")
+                                {
+                                    var webPage = (TLWebPage)tLMessageMediaWebPage.Webpage;
+                                    url = webPage.Url;
+                                }
+
+                                resultMessages.Add(new Post
+                                {
+                                    TgMessageId = message.Id,
+                                    ChannelId = chat.Id,
+                                    Content = message.Message + @" : " + url,
+                                    Type = EnChannelMessage.WebPage,
+                                    Views = message.Views ?? 0,
+                                    ChannelName = channelName
+                                });
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
