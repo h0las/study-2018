@@ -1,4 +1,4 @@
-﻿namespace TelegramNews.Database.Services
+﻿namespace TelegramNews.Services
 {
     using System;
     using System.Collections.Generic;
@@ -12,6 +12,8 @@
         Post Get(int id);
 
         void Add(Post newPost);
+
+        void Add(IEnumerable<Post> posts);
 
         int Commit();
     }

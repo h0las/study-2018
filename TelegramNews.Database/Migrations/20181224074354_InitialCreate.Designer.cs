@@ -10,8 +10,8 @@ using TelegramNews.Database.Data;
 namespace TelegramNews.Database.Migrations
 {
     [DbContext(typeof(ChannelDbContext))]
-    [Migration("20181220134219_IdentityTables")]
-    partial class IdentityTables
+    [Migration("20181224074354_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -139,11 +139,13 @@ namespace TelegramNews.Database.Migrations
 
                     b.Property<int>("ChannelId");
 
+                    b.Property<string>("ChannelName");
+
                     b.Property<string>("Content");
 
                     b.Property<int>("Type");
 
-                    b.Property<int>("Views");
+                    b.Property<int?>("Views");
 
                     b.HasKey("Id");
 

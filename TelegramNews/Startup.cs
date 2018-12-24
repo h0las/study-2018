@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using TelegramNews.Database.Services;
 using TelegramNews.Database.Data;
 using TelegramNews.Database.Entities;
+using TelegramNews.Services;
 using System.IO;
 
 namespace TelegramNews
@@ -24,16 +24,24 @@ namespace TelegramNews
 
         public Startup(IHostingEnvironment env)
         {
-            Configuration = ConfigProvider.GetConfiguration();
+            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json");
+            builder.AddJsonFile("appsettings.json", optional: true);
+
+            if (env.IsDevelopment())
+                builder.AddUserSecrets<Startup>();
+
+            Configuration = builder.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ChannelDbContext>(options => options.UseSqlServer(connectionString));
 
+            services.AddDbContext<ChannelDbContext>(options => options.UseSqlServer(connectionString));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ChannelDbContext>();
+            services.AddScoped<IPostData, SqlPostData>();
+            services.AddSingleton<ITelegramServicesManager, TelegramServicesManager>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

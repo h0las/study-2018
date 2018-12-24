@@ -1,9 +1,9 @@
-﻿namespace TelegramNews.Database.Services
+﻿namespace TelegramNews.Services
 {
     using System;
     using System.Collections.Generic;
     using TelegramNews.Database.Entities;
-    using Data;
+    using TelegramNews.Database.Data;
 
     public class SqlPostData : IPostData
     {
@@ -18,6 +18,14 @@
         {
             _db.Add(newPost);
             Commit();
+        }
+
+        public void Add(IEnumerable<Post> posts)
+        {
+            foreach(var post in posts)
+            {
+                Add(post);
+            }
         }
 
         public int Commit()

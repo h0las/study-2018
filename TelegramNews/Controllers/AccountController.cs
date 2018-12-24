@@ -8,20 +8,22 @@
     using Microsoft.AspNetCore.Identity;
     using ViewModels;
     using TelegramNews.Database.Entities;
+    using System.Security.Claims;
+    using System.Threading;
 
     public class AccountController : Controller
     {
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userMaanger, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _userManager = userMaanger;
+            _userManager = userManager;
             _signInManager = signInManager;
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public ViewResult Register()
         {
             return View();
         }
@@ -32,7 +34,7 @@
             if (!ModelState.IsValid)
                 return View();
 
-            var user = new User { UserName = model.Username };
+            var user = new User { UserName = model.Username, PhoneNumber = model.PhoneNumber };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -72,7 +74,7 @@
         {
             if (!ModelState.IsValid) return View(model);
 
-            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
             if (result.Succeeded)
             {
@@ -82,7 +84,7 @@
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ConnectToTelegram", "Home");
                 }
             }
 

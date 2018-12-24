@@ -1,0 +1,19 @@
+﻿@model TelegramCodeViewModel
+
+@{ViewBag.Title = "Confirm code";}
+
+<h2> We sent the code to your phone number. Please enter it and click "Confirm" </h2>
+
+<form method="post" asp-controller="Home" asp-action="ConfirmTelegramCode">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Code"></label>
+        <input asp-for="Code" />
+        <span asp-validation-for="Code"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="Confirm" />
+    </div>
+</form>

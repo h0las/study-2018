@@ -1,0 +1,14 @@
+﻿@model IEnumerable<PostViewModel>
+
+@{
+    ViewBag.Title = "Feed";
+}
+
+@foreach (var post in Model)
+{
+    @Html.Partial("_Post", post);
+}
+
+@section footer{
+    <div>This is the feed footer</div>
+}
