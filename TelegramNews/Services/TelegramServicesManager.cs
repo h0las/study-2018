@@ -139,7 +139,7 @@
         private TelegramClient GetTelegramClient()
         {
             var store = new FileSessionStore();
-            var session = "session_1230002233";
+            var session = "session_1234567890";
 
             return new TelegramClient(_apiId, _apiHash, store, session);
         }

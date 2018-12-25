@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using TelegramNews.ViewModels;
 using TelegramNews.Services;
 using TelegramNews.Database.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace TelegramNews.Controllers
 {
@@ -16,11 +17,13 @@ namespace TelegramNews.Controllers
     {
         private IPostData _posts;
         private ITelegramServicesManager _telegramServicesManager;
+        private IConfiguration _config;
 
-        public HomeController(IPostData posts, ITelegramServicesManager telegramServicesManager)
+        public HomeController(IPostData posts, ITelegramServicesManager telegramServicesManager, IConfiguration configuration)
         {
             _posts = posts;
             _telegramServicesManager = telegramServicesManager;
+            _config = configuration;
         }
 
         [AllowAnonymous]
@@ -61,7 +64,8 @@ namespace TelegramNews.Controllers
 
         public ViewResult LoadFeed()
         {
-            var currentPosts = _telegramServicesManager.GetPosts(10, "myChannel").Result;
+            var currentChannel = _config.GetSection("TelegramDevAccountConfig").GetSection("ChannelName").Value;
+            var currentPosts = _telegramServicesManager.GetPosts(10, currentChannel).Result;
             var dbPosts = _posts.GetAll();
 
             var newPosts = currentPosts.Except(dbPosts, new PostComparer());
