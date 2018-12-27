@@ -19,6 +19,7 @@
         private TelegramClient _client;
         private string _hashCode;
         private string _lastCodeRequestNumber;
+        private int _filePartSize;
 
         public TelegramServicesManager(IConfiguration configuration)
         {
@@ -79,6 +80,9 @@
                         {
                             case "TeleSharp.TL.TLMessageMediaPhoto":
                                 var tLMessageMediaPhoto = (TLMessageMediaPhoto)message.Media;
+                                var photo = (TLPhoto)tLMessageMediaPhoto.Photo;
+
+                                var resPhoto = await GetPhotoAttachmentBytes(photo);
 
                                 resultMessages.Add(new Post()
                                 {
@@ -87,29 +91,53 @@
                                     Content = tLMessageMediaPhoto.Caption,
                                     Type = EnChannelMessage.MediaPhoto,
                                     Views = message.Views ?? 0,
-                                    ChannelName = channelName
+                                    ChannelName = channelName,
+                                    File = resPhoto,
+                                    FileType = "image/jpeg"
                                 });
                                 break;
                             case "TeleSharp.TL.TLMessageMediaWebPage":
                                 var tLMessageMediaWebPage = (TLMessageMediaWebPage)message.Media;
-                                string url = string.Empty;
+                                var url = string.Empty;
+                                var title = string.Empty;
+
                                 if (tLMessageMediaWebPage.Webpage.GetType().ToString() != "TeleSharp.TL.TLWebPageEmpty")
                                 {
                                     var webPage = (TLWebPage)tLMessageMediaWebPage.Webpage;
                                     url = webPage.Url;
+                                    title = webPage.Title;
                                 }
 
                                 resultMessages.Add(new Post
                                 {
                                     TgMessageId = message.Id,
                                     ChannelId = chat.Id,
-                                    Content = message.Message + @" : " + url,
+                                    Content = message.Message,
                                     Type = EnChannelMessage.WebPage,
                                     Views = message.Views ?? 0,
-                                    ChannelName = channelName
+                                    ChannelName = channelName,
+                                    Url = url,
+                                    Title = title
                                 });
                                 break;
                             default:
+                                break;
+                            case "TeleSharp.TL.TLMessageMediaDocument":
+                                var tLMessageMediaDocument = (TLMessageMediaDocument)message.Media;
+                                var document = (TLDocument)tLMessageMediaDocument.Document;
+
+                                var resDocument = await GetDocumentAttachmentBytes(document);
+                                resultMessages.Add(new Post()
+                                {
+                                    TgMessageId = message.Id,
+                                    ChannelId = chat.Id,
+                                    Content = tLMessageMediaDocument.Caption,
+                                    Type = EnChannelMessage.MediaDocument,
+                                    Views = message.Views ?? 0,
+                                    ChannelName = channelName,
+                                    File = resDocument,
+                                    FileType = document.MimeType
+                                });
                                 break;
                         }
                     }
@@ -142,6 +170,41 @@
             var session = "session_1234567890";
 
             return new TelegramClient(_apiId, _apiHash, store, session);
+        }
+
+        private async Task<byte[]> GetPhotoAttachmentBytes(TLPhoto photo)
+        {
+            var photoSize = photo.Sizes.ToList().OfType<TLPhotoSize>().Last();
+            var tlFileLocation = (TLFileLocation)photoSize.Location;
+
+            _filePartSize = 1024 * 512;
+
+            var resFile = await _client.GetFile(
+                    new TLInputFileLocation
+                    {
+                        LocalId = tlFileLocation.LocalId,
+                        Secret = tlFileLocation.Secret,
+                        VolumeId = tlFileLocation.VolumeId
+                    }, _filePartSize
+                );
+
+            return resFile.Bytes;
+        }
+
+        private async Task<byte[]> GetDocumentAttachmentBytes(TLDocument document)
+        {
+            _filePartSize = 1024 * 512;
+
+            var resFile = await _client.GetFile(
+                    new TLInputDocumentFileLocation
+                    {
+                        AccessHash = document.AccessHash,
+                        Id = document.Id,
+                        Version = document.Version
+                    }, _filePartSize
+                );
+
+            return resFile.Bytes;
         }
     }
 }

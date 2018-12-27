@@ -2,18 +2,24 @@
 
 @{ViewBag.Title = "Confirm code";}
 
-<h2> We sent the code to your phone number. Please enter it and click "Confirm" </h2>
+@section Styles {
+    <link href="@Url.Content("~/styles.css")" rel="stylesheet" type="text/css" />
+}
 
-<form method="post" asp-controller="Home" asp-action="ConfirmTelegramCode">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="text-center div-center-height-small">
+    <h3> We sent the code to your phone number. Please enter it and click "Confirm" </h3>
 
-    <div>
-        <label asp-for="Code"></label>
-        <input asp-for="Code" />
-        <span asp-validation-for="Code"></span>
-    </div>
+    <form method="post" asp-controller="Home" asp-action="ConfirmTelegramCode" class="form-signin">
+        <div asp-validation-summary="ModelOnly"></div>
 
-    <div>
-        <input type="submit" value="Confirm" />
-    </div>
-</form>
+        <div>
+            <label asp-for="Code"></label>
+            <input asp-for="Code" class="form-control" />
+            <span asp-validation-for="Code"></span>
+        </div>
+
+        <div>
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Confirm" />
+        </div>
+    </form>
+</div>

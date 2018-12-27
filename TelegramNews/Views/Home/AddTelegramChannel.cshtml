@@ -1,0 +1,25 @@
+﻿@model TelegramChannelViewModel
+
+@{ViewBag.Title = "Add channel";}
+
+@section Styles {
+    <link href="@Url.Content("~/styles.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="text-center div-center-height-small">
+    <h3> Hello! Please enter the name of your favorite telegram channel. </h3>
+
+    <form method="post" asp-controller="Home" asp-action="AddTelegramChannel" class="form-signin">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <div>
+            <label asp-for="ChannelName"></label>
+            <input asp-for="ChannelName" class="form-control" />
+            <span asp-validation-for="ChannelName"></span>
+        </div>
+
+        <div>
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Add" />
+        </div>
+    </form>
+</div>

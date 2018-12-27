@@ -4,11 +4,23 @@
     ViewBag.Title = "Feed";
 }
 
-@foreach (var post in Model)
-{
-    @Html.Partial("_Post", post);
+@section Header {
+    @await Html.PartialAsync("_HeaderNavbar")
 }
 
-@section footer{
-    <div>This is the feed footer</div>
-}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <a class="btn btn-lg btn-success" asp-action="AddTelegramChannel" role="button">Add Channel</a>
+        </div>
+        <div class="col-sm-6">
+            @foreach (var post in Model)
+            {
+                @Html.Partial("_Post", post);
+            }
+        </div>
+        <div class="col-sm-3">
+
+        </div>
+    </div>
+</div>

@@ -1,11 +1,29 @@
-﻿@model PostViewModel
+﻿@using TelegramNews.Database.Entities
 
-<section class="blog-post">
-    <p class="blog-post-meta">
-        @Model.ChannelName, <i>views: @Model.Views</i>
-    </p>
+@model PostViewModel
 
-    <p>
-        @Model.Content
-    </p>
+<section class="panel panel-default">
+    <div class="panel-heading">
+        <p>
+            channel: @Model.ChannelName, <i>views: @Model.Views</i>
+        </p>
+    </div>
+    <div class="panel-body">
+        @if (Model.Type == EnChannelMessage.MediaPhoto)
+        {
+            <img class="img-responsive" src='@Url.Action("GetFile", "Home", new { messageId = Model.Id })' />
+        }
+        else if (Model.Type == EnChannelMessage.MediaDocument)
+        {
+            <a href='@Url.Action("GetFile", "Home", new { messageId = Model.Id })'> attachment(@Model.FileType)</a>
+        }
+        else if (Model.Type == EnChannelMessage.WebPage)
+        {
+            <a class="@Model.Url text-center"> @Model.Title </a>
+        }
+
+        <p class="text-justify">
+            @Model.Content
+        </p>
+    </div>
 </section>

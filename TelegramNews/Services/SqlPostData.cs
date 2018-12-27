@@ -20,6 +20,12 @@
             Commit();
         }
 
+        public void Add(Channel newChannel)
+        {
+            _db.Add(newChannel);
+            Commit();
+        }
+
         public void Add(IEnumerable<Post> posts)
         {
             foreach(var post in posts)
@@ -41,6 +47,11 @@
         public IEnumerable<Post> GetAll()
         {
             return _db.Posts;
+        }
+
+        public IEnumerable<Channel> GetAllChannels()
+        {
+            return _db.Channels;
         }
     }
 }

@@ -9,6 +9,7 @@ using TelegramNews.ViewModels;
 using TelegramNews.Services;
 using TelegramNews.Database.Entities;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace TelegramNews.Controllers
 {
@@ -64,8 +65,15 @@ namespace TelegramNews.Controllers
 
         public ViewResult LoadFeed()
         {
-            var currentChannel = _config.GetSection("TelegramDevAccountConfig").GetSection("ChannelName").Value;
-            var currentPosts = _telegramServicesManager.GetPosts(10, currentChannel).Result;
+            var channels = _posts.GetAllChannels().ToList();
+            var currentPosts = new List<Post>();
+
+            foreach(var channel in channels)
+            {
+                var channelPosts = _telegramServicesManager.GetPosts(5, channel.ChannelName).Result.ToList();
+                currentPosts = currentPosts.Union(channelPosts, new PostComparer()).ToList();
+            }
+
             var dbPosts = _posts.GetAll();
 
             var newPosts = currentPosts.Except(dbPosts, new PostComparer());
@@ -77,10 +85,22 @@ namespace TelegramNews.Controllers
                 {
                     Content = post.Content,
                     Views = post.Views,
-                    ChannelName = post.ChannelName
+                    ChannelName = post.ChannelName,
+                    Id = post.Id,
+                    Type = post.Type,
+                    Title = post.Title,
+                    Url = post.Url,
+                    FileType = post.FileType
                 });
 
             return View(model);
+        }
+
+        public FileContentResult GetFile(int messageId)
+        {
+            var post = _posts.Get(messageId);
+
+            return File(post.File, post.FileType);
         }
 
         public IActionResult SendTelegramCode(string phoneNumber)
@@ -105,6 +125,25 @@ namespace TelegramNews.Controllers
 
             if (_telegramServicesManager.IsUserAuthorized())
             {
+                return RedirectToAction("AddTelegramChannel", "Home");
+            }
+
+            ModelState.AddModelError("", "Authorized failded");
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult AddTelegramChannel()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddTelegramChannel(TelegramChannelViewModel model)
+        {
+            if(model.ChannelName != string.Empty)
+            {
+                _posts.Add(new Channel { ChannelName = model.ChannelName });
                 return RedirectToAction("LoadFeed", "Home");
             }
 

@@ -4,26 +4,13 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/vendor.min.css" />
+    @RenderSection("Styles", false)
 </head>
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">Telegram Feed</a>
-            </div>
-
-            <div class="nav navbar-nav pull-right">
-                @await Html.PartialAsync("_LoginLinks")
-            </div>
-        </div>
-    </nav>
+    @RenderSection("Header", false)
     <div>
         @RenderBody()
     </div>
-    <footer>
-        @RenderSection("footer", false)
-    </footer>
-
     <script src="~/vendor.min.js"></script>
 </body>
 </html>

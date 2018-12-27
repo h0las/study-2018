@@ -19,6 +19,5 @@
         bool IsUserAuthorized();
 
         Task<TLUser> MakeAuthAsync(string code);
-
     }
 }

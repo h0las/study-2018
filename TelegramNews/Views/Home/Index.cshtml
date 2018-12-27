@@ -2,10 +2,14 @@
     ViewBag.Title = "Home";
 }
 
-<div>
-    <a asp-action="ConnectToTelegram">Connect to Telegram</a>
-</div>
-
-@section footer{
-    <div> This is the Index footer</div>
+@section Header {
+    @await Html.PartialAsync("_HeaderNavbar")
 }
+
+<main class="container" role="main">
+    <div class="jumbotron">
+        <h1>Telegram Feed</h1>
+        <p class="lead">This is a simple web application for getting a list of messages from different user channels. Please, sign up and try this:</p>
+        <a class="btn btn-lg btn-primary" asp-action="ConnectToTelegram" role="button">Connect to Telegram</a>
+    </div>
+</main>

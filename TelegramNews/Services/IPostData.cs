@@ -9,9 +9,13 @@
     {
         IEnumerable<Post> GetAll();
 
+        IEnumerable<Channel> GetAllChannels();
+
         Post Get(int id);
 
         void Add(Post newPost);
+
+        void Add(Channel newPost);
 
         void Add(IEnumerable<Post> posts);
 

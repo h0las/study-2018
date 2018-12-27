@@ -18,6 +18,14 @@
         public int? Views { get; set; }
 
         public EnChannelMessage Type { get; set; }
+
+        public byte[] File { get; set; }
+
+        public string FileType { get; set; }
+
+        public string Url { get; set; }
+
+        public string Title { get; set; }
     }
 
     public enum EnChannelMessage
@@ -32,7 +40,7 @@
     {
         public bool Equals(Post x, Post y)
         {
-            if(x.TgMessageId == y.TgMessageId)
+            if((x.TgMessageId == y.TgMessageId) && (x.ChannelId == y.ChannelId))
             {
                 return true;
             }

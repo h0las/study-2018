@@ -7,6 +7,7 @@
     public class ChannelDbContext : IdentityDbContext<User>
     {
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Channel> Channels { get; set; }
 
         public ChannelDbContext(DbContextOptions<ChannelDbContext> options)
             : base(options)

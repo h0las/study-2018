@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TelegramNews.Database.Data;
 
 namespace TelegramNews.Database.Migrations
 {
     [DbContext(typeof(ChannelDbContext))]
-    partial class ChannelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181226140924_AddedNewFieldsToEntity")]
+    partial class AddedNewFieldsToEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,19 +129,6 @@ namespace TelegramNews.Database.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("TelegramNews.Database.Entities.Channel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ChannelName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Channels");
                 });
 
             modelBuilder.Entity("TelegramNews.Database.Entities.Post", b =>
