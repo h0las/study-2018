@@ -1,0 +1,51 @@
+﻿@model PostViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@section Header {
+    @await Html.PartialAsync("_HeaderNavbar")
+}
+
+<div class="container div-full-message">
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <div class="card h-100">
+                @if (Model.Type == EnChannelMessage.MediaPhoto)
+                {
+                    <a href='@Url.Action("GetFile", "Home", new { messageId = Model.Id })'>
+                        <img class="card-img-top" src='@Url.Action("GetFile", "Home", new { messageId = Model.Id })' />
+                    </a>
+                }
+                else
+                {
+                    if (Model.Type == EnChannelMessage.MediaDocument)
+                    {
+                        <a href='@Url.Action("GetFile", "Home", new { messageId = Model.Id })'>
+                            <img class="card-img-top" src="~/attachment.png" alt="">
+                        </a>
+                    }
+                }
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href='@Url.Action("LoadFeed", "Home", new { channelFilter = Model.ChannelName })'>@Model.ChannelName</a>
+                    </h4>
+                    <h5 class="card-title">
+                        @if (Model.Type == EnChannelMessage.WebPage)
+                        {
+                            <a href="@Model.Url"> @Model.Title </a>
+                        }
+                    </h5>
+                    <p class="card-text">@Model.Content</p>
+                </div>
+                <div class="card-footer pull-right">
+                    <small class="text-muted">views: @Model.Views</small>
+                    <a class="btn btn-default" asp-action="LoadFeed" asp-route-id="@Model.Id">Back</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+</div>

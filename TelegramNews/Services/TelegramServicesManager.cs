@@ -9,7 +9,9 @@
     using Microsoft.Extensions.Configuration;
     using TeleSharp.TL;
     using TeleSharp.TL.Messages;
+    using TeleSharp.TL.Upload;
     using TLSharp.Core;
+    using System.IO;
 
     public class TelegramServicesManager : ITelegramServicesManager
     {
@@ -19,7 +21,6 @@
         private TelegramClient _client;
         private string _hashCode;
         private string _lastCodeRequestNumber;
-        private int _filePartSize;
 
         public TelegramServicesManager(IConfiguration configuration)
         {
@@ -37,12 +38,11 @@
             t.Wait();
         }
 
-        public async Task<IEnumerable<Post>> GetPosts(int limit, string channelName)
+        public async Task<IEnumerable<Post>> GetPosts(int limit, int maxId, string channelName)
         {
             var resultMessages = new List<Post>();
 
             var offset = 0;
-            var maxId = -1;
 
             var dialogs = (TLDialogs)await _client.GetUserDialogsAsync();
             var chat = dialogs.Chats.ToList()
@@ -177,32 +177,58 @@
             var photoSize = photo.Sizes.ToList().OfType<TLPhotoSize>().Last();
             var tlFileLocation = (TLFileLocation)photoSize.Location;
 
-            _filePartSize = 1024 * 512;
+            var filepart = 512 * 1024;
+            var offset = 0;
+            var resFile = new TLFile();
 
-            var resFile = await _client.GetFile(
-                    new TLInputFileLocation
-                    {
-                        LocalId = tlFileLocation.LocalId,
-                        Secret = tlFileLocation.Secret,
-                        VolumeId = tlFileLocation.VolumeId
-                    }, _filePartSize
-                );
+            using (var ms = new MemoryStream())
+            {
+                while(offset < photoSize.Size)
+                {
+                    resFile = await _client.GetFile(
+                        new TLInputFileLocation
+                        {
+                            LocalId = tlFileLocation.LocalId,
+                            Secret = tlFileLocation.Secret,
+                            VolumeId = tlFileLocation.VolumeId
+                        }, filepart, offset
+                    );
+
+                    ms.Write(resFile.Bytes, 0, resFile.Bytes.Length);
+                    offset += filepart;
+                }
+
+                resFile.Bytes = ms.ToArray();
+            }   
 
             return resFile.Bytes;
         }
 
         private async Task<byte[]> GetDocumentAttachmentBytes(TLDocument document)
         {
-            _filePartSize = 1024 * 512;
+            var filepart = 512 * 1024;
+            var offset = 0;
+            var resFile = new TLFile();
 
-            var resFile = await _client.GetFile(
+            using (var ms = new MemoryStream())
+            {
+                while (offset < document.Size)
+                {
+                    resFile = await _client.GetFile(
                     new TLInputDocumentFileLocation
                     {
                         AccessHash = document.AccessHash,
                         Id = document.Id,
                         Version = document.Version
-                    }, _filePartSize
+                    }, filepart, offset
                 );
+
+                    ms.Write(resFile.Bytes, 0, resFile.Bytes.Length);
+                    offset += filepart;
+                }
+
+                resFile.Bytes = ms.ToArray();
+            }
 
             return resFile.Bytes;
         }

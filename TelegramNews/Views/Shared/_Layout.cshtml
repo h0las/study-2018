@@ -4,13 +4,13 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/vendor.min.css" />
-    @RenderSection("Styles", false)
+    @RenderSection("AccountStyles", false)
+    <link rel="stylesheet" href="~/mainStyles.css" />
 </head>
 <body>
     @RenderSection("Header", false)
-    <div>
-        @RenderBody()
-    </div>
+    @RenderBody()
+    @RenderSection("Footer", false)
     <script src="~/vendor.min.js"></script>
 </body>
 </html>

@@ -2,14 +2,16 @@
     ViewBag.Title = "Home";
 }
 
-@section Header {
-    @await Html.PartialAsync("_HeaderNavbar")
-}
+<div id="wrap">
+    @section Header {
+        @await Html.PartialAsync("_HeaderNavbar")
+    }
 
-<main class="container" role="main">
-    <div class="jumbotron">
-        <h1>Telegram Feed</h1>
-        <p class="lead">This is a simple web application for getting a list of messages from different user channels. Please, sign up and try this:</p>
-        <a class="btn btn-lg btn-primary" asp-action="ConnectToTelegram" role="button">Connect to Telegram</a>
-    </div>
-</main>
+    <main class="container padding-container" role="main">
+        <div class="jumbotron">
+            <h1>Telegram Feed</h1>
+            <p class="lead">This is a simple web application for getting a list of messages from different user channels. Please, sign up and try this:</p>
+            <a class="btn btn-lg btn-primary" asp-action="ConnectToTelegram" role="button">Connect to Telegram</a>
+        </div>
+    </main>
+</div>

@@ -10,7 +10,7 @@
 
     public interface ITelegramServicesManager
     {
-        Task<IEnumerable<Post>> GetPosts(int limit, string channelName);
+        Task<IEnumerable<Post>> GetPosts(int limit, int maxId, string channelName);
 
         void ConnectClientToTelegramAsync();
 

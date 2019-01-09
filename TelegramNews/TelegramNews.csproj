@@ -37,6 +37,7 @@
     <None Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\attachment.png" />
   </ItemGroup>
 
 

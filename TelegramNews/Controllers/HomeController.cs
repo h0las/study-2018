@@ -30,9 +30,7 @@ namespace TelegramNews.Controllers
         [AllowAnonymous]
         public ViewResult Index()
         {
-            var model = new IndexModel { content = "Hello, User!" };
-
-            return View(model);
+            return View();
         }
 
         public IActionResult ConnectToTelegram()
@@ -63,27 +61,55 @@ namespace TelegramNews.Controllers
             return RedirectToAction("SendTelegramCode", "Home", new { phoneNumber = model.PhoneNumber});
         }
 
-        public ViewResult LoadFeed()
+        public ViewResult LoadFeed(string channelFilter = "")
         {
-            var channels = _posts.GetAllChannels().ToList();
+            IEnumerable<Channel> channels;
+            IEnumerable<Post> posts;
+
+            channels = channelFilter == string.Empty ? 
+                channels = _posts.GetAllChannels().ToList() :
+                _posts.GetAllChannels().Where(channel => channel.ChannelName == channelFilter).ToList();
+
+            var channelNames = channels.Select(channel => channel.ChannelName).ToArray();
+            
             var currentPosts = new List<Post>();
 
             foreach(var channel in channels)
             {
-                var channelPosts = _telegramServicesManager.GetPosts(5, channel.ChannelName).Result.ToList();
+                var currentChannel = _posts.GetChannel(channel.Id);
+                
+                var channelPosts = _telegramServicesManager.GetPosts(24, currentChannel.LastMessageId, channel.ChannelName).Result.ToList();
+
+                if (channelPosts.Count != 0)
+                {
+                    var lastChannelMessage = channelPosts.Last();
+                    currentChannel.LastMessageId = lastChannelMessage.TgMessageId;
+                    _posts.Commit();
+                }
+
                 currentPosts = currentPosts.Union(channelPosts, new PostComparer()).ToList();
             }
 
             var dbPosts = _posts.GetAll();
 
-            var newPosts = currentPosts.Except(dbPosts, new PostComparer());
+            var newPosts = currentPosts.Except(dbPosts, new PostComparer()).Reverse();
 
             _posts.Add(newPosts);
 
-            var model = _posts.GetAll().Select(post =>
+            var maxPreviewContentLength = 150;
+
+            posts = channelFilter == string.Empty ? 
+                _posts.GetAll().Where(post => channelNames.Contains(post.ChannelName)).TakeLast(12) : 
+                _posts.GetAll().Where(post => channelNames.Contains(post.ChannelName)).Take(24);
+
+            var model = new FeedViewModel
+            {
+                Posts = posts.Select(post =>
                 new PostViewModel
                 {
-                    Content = post.Content,
+                    PreviewContent = post.Content.Length > maxPreviewContentLength ?
+                        post.Content.Substring(0, Math.Min(post.Content.Length, maxPreviewContentLength)) + @"..." :
+                        post.Content.Substring(0, Math.Min(post.Content.Length, maxPreviewContentLength)),
                     Views = post.Views,
                     ChannelName = post.ChannelName,
                     Id = post.Id,
@@ -91,7 +117,9 @@ namespace TelegramNews.Controllers
                     Title = post.Title,
                     Url = post.Url,
                     FileType = post.FileType
-                });
+                }),
+                Channels = channels.Select(channel => new ChannelViewModel { ChannelName = channel.ChannelName })
+            };  
 
             return View(model);
         }
@@ -143,12 +171,35 @@ namespace TelegramNews.Controllers
         {
             if(model.ChannelName != string.Empty)
             {
-                _posts.Add(new Channel { ChannelName = model.ChannelName });
+                _posts.Add(new Channel { ChannelName = model.ChannelName, LastMessageId = -1 });
                 return RedirectToAction("LoadFeed", "Home");
             }
 
             ModelState.AddModelError("", "Authorized failded");
             return View(model);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var model = _posts.Get(id);
+            var viewModel = new PostViewModel
+            {
+                Id = model.Id,
+                Content = model.Content,
+                Views = model.Views,
+                ChannelName = model.ChannelName,
+                Title = model.Title,
+                Url = model.Url,
+                Type = model.Type
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult ChannelsList()
+        {
+            return View(_posts.GetAllChannels());
         }
     }
 }

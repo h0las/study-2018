@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNews", "TelegramNews\TelegramNews.csproj", "{3BC65751-CBF3-4ABA-8ADD-15F3C40FDF91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramNews", "TelegramNews\TelegramNews.csproj", "{3BC65751-CBF3-4ABA-8ADD-15F3C40FDF91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNews.Database", "TelegramNews.Database\TelegramNews.Database.csproj", "{6E97007C-0CA5-4238-81E2-7C033DADCFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramNews.Database", "TelegramNews.Database\TelegramNews.Database.csproj", "{6E97007C-0CA5-4238-81E2-7C033DADCFCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

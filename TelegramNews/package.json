@@ -2,9 +2,13 @@
   "version": "1.0.0",
   "name": "asp.net",
   "private": true,
-  "devDependencies": {},
+  "devDependencies": {
+    "browser-sync": "2.24.5",
+    "gulp": "^3.9.1"
+  },
   "dependencies": {
-    "bootstrap": "3.3.7",
+    "bootstrap": "4.1.1",
+    "jquery": "3.3.1",
     "jquery-validation": "1.17.0",
     "jquery-validation-unobtrusive": "3.2.6"
   }

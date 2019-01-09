@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TelegramNews.Database.Data;
 
 namespace TelegramNews.Database.Migrations
 {
     [DbContext(typeof(ChannelDbContext))]
-    partial class ChannelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181229113022_addChannellastMessageIdFiekd")]
+    partial class addChannellastMessageIdFiekd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

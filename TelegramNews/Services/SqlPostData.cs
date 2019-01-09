@@ -53,5 +53,10 @@
         {
             return _db.Channels;
         }
+
+        public Channel GetChannel(int id)
+        {
+            return _db.Find<Channel>(id);
+        }
     }
 }

@@ -10,6 +10,7 @@
     {
         public string ChannelName { get; set; }
         public string Content { get; set; }
+        public string PreviewContent { get; set; }
         public int? Views { get; set; }
         public int Id { get; set; }
         public EnChannelMessage Type { get; set; }

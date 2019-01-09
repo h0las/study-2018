@@ -13,6 +13,8 @@
 
         Post Get(int id);
 
+        Channel GetChannel (int id);
+
         void Add(Post newPost);
 
         void Add(Channel newPost);

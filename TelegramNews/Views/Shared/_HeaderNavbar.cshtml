@@ -3,25 +3,27 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">Telegram Feed</a>
-        </div>
-
-        <div class="nav navbar-nav pull-right">
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <form method="post" asp-controller="Account" asp-action="Logout">
-                    @User.Identity.Name
-                    <input type="submit" value="Sign Out" class="navbar-btn btn btn-danger" />
-                </form>
-            }
-            else
-            {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-xs btn-primary navbar-btn">Sign In</a>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-xs btn-success navbar-btn">Sign Up</a>
-            }
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Telegram Feed</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Logout" class="nav-link">Log Out</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Login" class="nav-link">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Register" class="nav-link">Sign Up</a>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
 </nav>
