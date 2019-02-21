@@ -1,2 +1,1 @@
-# study-2018
-SimbirSoft
+# study-2019
